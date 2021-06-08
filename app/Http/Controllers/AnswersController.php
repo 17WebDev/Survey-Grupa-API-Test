@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Answer;
 
 class AnswersController extends Controller
 {
@@ -11,9 +12,12 @@ class AnswersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if (!$request->user()->is_admin) {
+            return Response()->json(['message'=>'Permission Denied'],401);
+        }
+        return Response()->json(Answer::all());
     }
 
     /**
@@ -34,7 +38,23 @@ class AnswersController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (is_null(json_decode($request->answer_json))) {
+            return Response()->json(['message'=>'Invalid JSON'],400);
+        }
+        $answer = new Answer;
+        
+        $answer->answer_json = trim(preg_replace('/\s+/', ' ', $request->answer_json));
+        $answer->user_id = $request->user()->id;
+        $answer->survey_id = $request->survey_id;
+        $answer->save();
+
+        return Response()->json($answer);
+    }
+
+    public function getMyAnswers(Request $request){
+        $answer = $request->user()->answer;
+
+        return Response()->json($answer);
     }
 
     /**

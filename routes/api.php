@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\SurveysController;
-
+use App\Http\Controllers\AnswersController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,5 +28,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::resource('users', UsersController::class)->middleware('auth:sanctum');
 Route::resource('surveys', SurveysController::class)->middleware('auth:sanctum');
+Route::resource('answers', AnswersController::class)->middleware('auth:sanctum');
+
+Route::get('/answers/get/me',[AnswersController::class,'getMyAnswers'])->middleware('auth:sanctum');
 
 

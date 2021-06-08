@@ -35,11 +35,14 @@ class SurveysController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$request->user()->is_admin) {
+            return Response()->json(['message'=>'Permission Denied'],401);
+        }
+
         $survey = new Survey;
         $survey->name = $request->name;
         $survey->survey_json = trim(preg_replace('/\s+/', ' ', $request->survey_json));
         $survey->save();
-        //$survey->json = json_decode($survey->survey_json);
 
         return Response()->json($survey);
     }
