@@ -66,7 +66,10 @@ class SurveysController extends Controller
                 }
             }
         }
-        $survey->questions;
+        foreach ($survey->questions as $question) {
+            $question->options;
+        }
+        
 
         return Response()->json($survey);
     }

@@ -9,8 +9,7 @@ use App\Models\Option;
 class Question extends Model
 {
     use HasFactory;
-    
-    
+
     public function options(){
         return $this->hasMany(Option::class);
     }
