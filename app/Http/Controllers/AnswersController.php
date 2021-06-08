@@ -47,6 +47,7 @@ class AnswersController extends Controller
         $answer->answer_json = trim(preg_replace('/\s+/', ' ', $request->answer_json));
         $answer->user_id = $request->user()->id;
         $answer->survey_id = $request->survey_id;
+        $answer->status = $request->status;
         $answer->save();
 
         return Response()->json($answer);

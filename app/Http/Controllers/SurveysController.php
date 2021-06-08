@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Survey;
+use App\Models\Question;
+use App\Models\Option;
 
 class SurveysController extends Controller
 {
@@ -42,7 +44,29 @@ class SurveysController extends Controller
         $survey = new Survey;
         $survey->name = $request->name;
         $survey->survey_json = trim(preg_replace('/\s+/', ' ', $request->survey_json));
+
         $survey->save();
+        $pages = $survey->survey_json->pages;
+        foreach($pages as $page){
+            foreach ($page->questions as $question) {
+                if ($question->type == "checkbox" || $question->type == "radiogroup") {
+                    $q = new Question;
+                    $q->name = $question->name;
+                    $q->question_text = $question->title;
+                    $q->survey_id = $survey->id;
+                    $q->save();
+
+                    foreach ($question->choices as $choice) {
+                        $c = new Option;
+                        $c->option_text = $choice;
+                        $c->question_id = $q->id;
+                        $c->count = 0;
+                        $c->save();
+                    }
+                }
+            }
+        }
+        $survey->questions;
 
         return Response()->json($survey);
     }
