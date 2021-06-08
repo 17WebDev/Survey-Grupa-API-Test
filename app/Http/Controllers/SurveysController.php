@@ -116,6 +116,33 @@ class SurveysController extends Controller
         $survey = Survey::find($id);
         $survey->name = $request->name;
         $survey->survey_json = $request->survey_json;
+
+        foreach ($survey->questions as $question) {
+            $question->survey()->dissociate();
+        }
+        $pages = $survey->survey_json->pages;
+        foreach($pages as $page){
+            foreach ($page->questions as $question) {
+                if ($question->type == "checkbox" || $question->type == "radiogroup") {
+                    $q = new Question;
+                    $q->name = $question->name;
+                    $q->question_text = $question->title;
+                    $q->survey_id = $survey->id;
+                    $q->save();
+
+                    foreach ($question->choices as $choice) {
+                        $c = new Option;
+                        $c->option_text = $choice;
+                        $c->question_id = $q->id;
+                        $c->count = 0;
+                        $c->save();
+                    }
+                }
+            }
+        }
+        foreach ($survey->questions as $question) {
+            $question->options;
+        }
         $survey->status = $request->status;
         $survey->save();
 
