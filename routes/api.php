@@ -32,4 +32,6 @@ Route::resource('answers', AnswersController::class)->middleware('auth:sanctum')
 
 Route::get('/answers/survey/{id}',[AnswersController::class,'getMyAnswers'])->middleware('auth:sanctum');
 
+Route::get('/surveys/results/{id}',[SurveysController::class,'results'])->middleware('auth:sanctum');
+
 

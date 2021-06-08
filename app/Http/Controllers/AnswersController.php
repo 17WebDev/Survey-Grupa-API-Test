@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Answer;
 use App\Models\User;
+use App\Models\Question;
+use App\Models\Option;
 
 class AnswersController extends Controller
 {
@@ -48,6 +50,24 @@ class AnswersController extends Controller
         $answer->user_id = $request->user()->id;
         $answer->survey_id = $request->survey_id;
         $answer->status = $request->status;
+        if ($answer->status == 1) {
+            foreach($answer->answer_json as $key => $question){
+                if (is_array($question)) {
+                    foreach ($question as $ans) {
+                        $q = Question::where('survey_id',$request->survey_id)->where('name',$key)->first();
+                        $option = Option::where('question_id',$q->id)->where('option_text',$ans)->first();
+                        $option->count+=1;
+                        $option->save();
+                    }
+                }else{
+                    $q = Question::where('survey_id',$request->survey_id)->where('name',$key)->first();
+                    $option = Option::where('question_id',$q->id)->where('option_text',$question)->first();
+                    $option->count+=1;
+                    $option->save();
+                }
+            }
+
+        }
         $answer->save();
 
         return Response()->json($answer);
@@ -107,6 +127,24 @@ class AnswersController extends Controller
         $answer->status = $request->status;
 
         $answer->save();
+        if ($answer->status == 1) {
+            foreach($answer->answer_json as $key => $question){
+                if (is_array($question)) {
+                    foreach ($question as $ans) {
+                        $q = Question::where('survey_id',$request->survey_id)->where('name',$key)->first();
+                        $option = Option::where('question_id',$q->id)->where('option_text',$ans)->first();
+                        $option->count+=1;
+                        $option->save();
+                    }
+                }else{
+                    $q = Question::where('survey_id',$request->survey_id)->where('name',$key)->first();
+                    $option = Option::where('question_id',$q->id)->where('option_text',$question)->first();
+                    $option->count+=1;
+                    $option->save();
+                }
+            }
+
+        }
 
         return Response()->json($answer);
 

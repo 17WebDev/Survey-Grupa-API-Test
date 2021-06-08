@@ -159,4 +159,13 @@ class SurveysController extends Controller
     {
         //
     }
+
+    public function results(Request $request,$id){
+        $survey = Survey::find($id);
+        foreach ($survey->questions as $question) {
+            $question->options;
+        }
+
+        return Response()->json($survey);
+    }
 }
