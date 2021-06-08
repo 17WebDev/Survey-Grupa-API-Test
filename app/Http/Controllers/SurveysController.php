@@ -44,7 +44,7 @@ class SurveysController extends Controller
         $survey = new Survey;
         $survey->name = $request->name;
         $survey->survey_json = trim(preg_replace('/\s+/', ' ', $request->survey_json));
-
+        $survey->status = $request->status;
         $survey->save();
         $pages = $survey->survey_json->pages;
         foreach($pages as $page){
