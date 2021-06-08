@@ -88,7 +88,21 @@ class AnswersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (is_null(json_decode($request->answer_json))) {
+            return Response()->json(['message'=>'Invalid JSON'],400);
+        }
+        $answer = Answer::find($id);
+
+        if ($request->user()->id =! $answer->user_id) {
+            return Response()->json(['message'=>'Permission Denied'],400);   
+        }
+        $answer->answer_json = trim(preg_replace('/\s+/', ' ', $request->answer_json));
+        $answer->status = $request->status;
+
+        $answer->save();
+
+        return Response()->json($answer);
+
     }
 
     /**
