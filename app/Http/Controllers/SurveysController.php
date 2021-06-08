@@ -78,7 +78,21 @@ class SurveysController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if (!$request->user()->is_admin) {
+            return Response()->json(['message'=>'Permission Denied'],401);
+        }
+
+        if (is_null(json_decode(trim(preg_replace('/\s+/', ' ', $request->survey_json))))) {
+            return Response()->json(['message'=>'Invalid JSON'],400);
+        }
+
+        $survey = Survey::find($id);
+        $survey->name = $request->name;
+        $survey->survey_json = $request->survey_json;
+        $survey->status = $request->status;
+        $survey->save();
+
+        return Response()->json($survey);
     }
 
     /**
