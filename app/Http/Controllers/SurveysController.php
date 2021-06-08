@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Survey;
 
 class SurveysController extends Controller
 {
@@ -13,7 +14,7 @@ class SurveysController extends Controller
      */
     public function index()
     {
-        //
+        return Response()->json(Survey::all());
     }
 
     /**
@@ -34,7 +35,13 @@ class SurveysController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $survey = new Survey;
+        $survey->name = $request->name;
+        $survey->survey_json = trim(preg_replace('/\s+/', ' ', $request->survey_json));
+        $survey->save();
+        //$survey->json = json_decode($survey->survey_json);
+
+        return Response()->json($survey);
     }
 
     /**
