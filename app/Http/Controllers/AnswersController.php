@@ -51,8 +51,8 @@ class AnswersController extends Controller
         return Response()->json($answer);
     }
 
-    public function getMyAnswers(Request $request){
-        $answer = $request->user()->answer;
+    public function getMyAnswers(Request $request,$id){
+        $answer = Answer::where('user_id',$request->user()->id)->where('survey_id',$id)->first();
 
         return Response()->json($answer);
     }
