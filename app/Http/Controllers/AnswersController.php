@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Answer;
+use App\Models\User;
 
 class AnswersController extends Controller
 {
@@ -52,6 +53,11 @@ class AnswersController extends Controller
     }
 
     public function getMyAnswers(Request $request,$id){
+        if ($id == "all") {
+            $answers  = $request->user()->answers;
+            return Response()->json($answers);
+
+        }
         $answer = Answer::where('user_id',$request->user()->id)->where('survey_id',$id)->first();
 
         return Response()->json($answer);
